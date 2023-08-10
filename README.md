@@ -30,7 +30,7 @@
     ◆ 参数名区分大小写；
     ◆ 验证推送消息通知的签名时，传送的sign参数不参与签名，将生成的签名与该sign值作校验
 
-### 数据内容说明
+### 消息数据内容说明
 字段 | 说明
 ---|---
 nonce_str | 随机字符
@@ -75,6 +75,17 @@ messages 样例：
 详细格式说明请参考企业微信官方文档：
 https://developer.work.weixin.qq.com/document/path/91774
 
+### 文件上传说明(聊天中的图片/语音/文件等)
+字段 | 说明
+---|---
+nonce_str | 随机字符
+sign | 数据的MD5签名
+sdkfileid | 消息内容中的sdkfileid
+md5sum | 消息内容中的md5sum
+file | form-data方式POST上传的文件
+
+注意：上传消息中的文件内容需要在config/subscribe.json中单独配置上传地址以及配置订阅的消息类型包含文件/图片/语音之类的，如果没有订阅则不会上传
+
 
 ### 安装及配置
 #### 1、安装.net 6运行环境
@@ -108,7 +119,9 @@ CentOS 7示例：
 打开config/subscribe.json
 [
   {
-    "callback":"http://xxxxxxx.xxxxx.com/xxx/xxx",  //回调通知地址
+    "subscribe_msgtype":["text","image"], //订阅的消息类型，具体类型参考微信官方文档
+    "message_callback":"http://xxxxxxx.xxxxx.com/xxx/xxx",  //消息回调通知地址
+    "file_upload":"http://xxxxxxx.xxxxx.com/xxx/xxx", //文件上传地址，如果不需要可以配置成空字符串
     "key":"23456788754334567834"   //回调数据签名key
   }
 //可以配置多个订阅者
